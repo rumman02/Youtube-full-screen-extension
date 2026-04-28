@@ -1,0 +1,1 @@
+# YouTube Full Screen Extension
