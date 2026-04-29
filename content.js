@@ -1,4 +1,7 @@
 (function () {
+  // Don't run on YouTube Shorts
+  if (location.pathname.startsWith("/shorts")) return;
+
   const STYLE_ID = "yt-theater-fullscreen-style";
 
   const css = `
@@ -8,7 +11,6 @@
       transition: opacity 0.3s ease !important;
     }
 
-    /* Hide header when at top */
     body.ytf-at-top #masthead-container,
     body.ytf-at-top ytd-masthead,
     body.ytf-at-top #masthead {
@@ -16,12 +18,10 @@
       pointer-events: none !important;
     }
 
-    /* Remove space reserved for header */
     ytd-app > #content > #header {
       display: none !important;
     }
 
-    /* Fill full viewport with video */
     ytd-watch-flexy[theater] #full-bleed-container {
       max-height: 100vh !important;
       height: 100vh !important;
@@ -86,14 +86,15 @@
     if (!isTheater) return;
     const atTop = window.scrollY < 50;
     document.body.classList.toggle("ytf-at-top", atTop);
-    if (atTop) {
-      injectScrollbarStyle();
-    } else {
-      removeScrollbarStyle();
-    }
+    atTop ? injectScrollbarStyle() : removeScrollbarStyle();
   }
 
   function check() {
+    // Skip if navigated to Shorts
+    if (location.pathname.startsWith("/shorts")) {
+      removeStyle();
+      return;
+    }
     const player = document.querySelector("ytd-watch-flexy");
     if (player && player.hasAttribute("theater")) {
       isTheater = true;
@@ -106,6 +107,9 @@
   }
 
   window.addEventListener("scroll", onScroll, { passive: true });
+
+  // Also re-check on SPA navigation (YouTube navigates without full reload)
+  navigation?.addEventListener("navigate", () => setTimeout(check, 500));
 
   const observer = new MutationObserver(check);
 
