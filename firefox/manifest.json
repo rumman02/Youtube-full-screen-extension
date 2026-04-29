@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+  "name": "YouTube Theater Fullscreen",
+  "version": "1.0",
+  "description": "Auto-expands YouTube theater mode to fill the entire screen",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "yt-theater-fullscreen@rumman02",
+      "strict_min_version": "109.0"
+    }
+  },
+  "permissions": ["*://www.youtube.com/*"],
+  "content_scripts": [
+    {
+      "matches": ["*://www.youtube.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
