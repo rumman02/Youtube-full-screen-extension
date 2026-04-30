@@ -1,5 +1,6 @@
 (function () {
-  if (location.pathname.startsWith("/shorts")) return;
+  // Only run on video watch pages
+  if (!location.pathname.startsWith("/watch")) return;
 
   const STYLE_ID = "yt-theater-fullscreen-style";
 
@@ -89,10 +90,13 @@
   }
 
   function check() {
-    if (location.pathname.startsWith("/shorts")) {
+    // Only apply on /watch, not home, channel, shorts, etc.
+    if (!location.pathname.startsWith("/watch") || location.pathname.startsWith("/shorts")) {
+      isTheater = false;
       removeStyle();
       return;
     }
+
     const player = document.querySelector("ytd-watch-flexy");
     if (player && player.hasAttribute("theater")) {
       isTheater = true;

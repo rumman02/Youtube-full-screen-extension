@@ -1,6 +1,6 @@
 (function () {
-  // Don't run on YouTube Shorts
-  if (location.pathname.startsWith("/shorts")) return;
+  // Only run on video watch pages
+  if (!location.pathname.startsWith("/watch")) return;
 
   const STYLE_ID = "yt-theater-fullscreen-style";
 
@@ -90,11 +90,13 @@
   }
 
   function check() {
-    // Skip if navigated to Shorts
-    if (location.pathname.startsWith("/shorts")) {
+    // Only apply on /watch, not home, channel, shorts, etc.
+    if (!location.pathname.startsWith("/watch") || location.pathname.startsWith("/shorts")) {
+      isTheater = false;
       removeStyle();
       return;
     }
+
     const player = document.querySelector("ytd-watch-flexy");
     if (player && player.hasAttribute("theater")) {
       isTheater = true;
@@ -108,7 +110,7 @@
 
   window.addEventListener("scroll", onScroll, { passive: true });
 
-  // Also re-check on SPA navigation (YouTube navigates without full reload)
+  // Re-check on SPA navigation
   navigation?.addEventListener("navigate", () => setTimeout(check, 500));
 
   const observer = new MutationObserver(check);
